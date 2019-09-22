@@ -272,6 +272,23 @@ func TestResponseWrite(t *testing.T) {
 
 			"HTTP/1.0 204 No Content\r\n\r\n",
 		},
+
+		// A successful response to a CONNECT request should not
+		// include a Content-Length header. See RFC 7231 4.3.6 and
+		// issue #34456.
+		{
+			Response{
+				StatusCode: 200,
+				Status:     "200 OK",
+				ProtoMajor: 1,
+				ProtoMinor: 1,
+				Request:    dummyReq("CONNECT"),
+				Header:     Header{},
+				Body:       nil,
+			},
+
+			"HTTP/1.1 200 OK\r\n\r\n",
+		},
 	}
 
 	for i := range respWriteTests {
